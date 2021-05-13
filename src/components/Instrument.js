@@ -3,6 +3,7 @@ import { Grid, Paper, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import useSound from "use-sound";
 import { SOUNDS } from "../config";
+import CustomKnob from "./CustomKnob"
 
 const useStyles = makeStyles({
   btnPattern: {
@@ -44,11 +45,15 @@ const Instrument = (props) => {
             color="secondary"
             variant="outlined"
             className={classes.btnName}
+            onClick={playOn}
           >
             {name}
           </Button>
         </Grid>
-        <Grid item md={10}>
+        <Grid item md={1}>
+          <CustomKnob />
+        </Grid>
+        <Grid item md={9}>
           {instrumentPatterns[name].map((beat, index) => (
             <Button
               key={index}

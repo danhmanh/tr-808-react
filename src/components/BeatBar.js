@@ -24,9 +24,9 @@ const BeatBar = (props) => {
   return (
     <>
       <Grid container spacing={3}>
-        <Grid item md={2}>
+        <Grid item md={3}>
         </Grid>
-        <Grid item md={10}>
+        <Grid item md={9}>
           {Array(16).fill("").map((beat, index) => (
             <Button
               key={index}

@@ -5,8 +5,6 @@ import { BLANK_PATTERN, SOUNDS } from "../config";
 import useSound from "use-sound";
 import BeatBar from "./BeatBar";
 
-
-
 const reducer = (beat, action) => {
   switch (action.type) {
     case "tick":

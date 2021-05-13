@@ -16,6 +16,8 @@ const reducer = (beat, action) => {
   switch (action.type) {
     case "tick":
       return beat < 16 ? beat + 1 : 1;
+    case "reset":
+      return 1;
     default:
       return beat;
   }
@@ -31,22 +33,18 @@ const MainBoard = () => {
   const [instrumentPatterns, setInstrumentPatterns] = useState(BLANK_PATTERN);
   const [playKick] = useSound(SOUND_NAMES["kick"], { interrupt: true });
   const [playSnare] = useSound(SOUND_NAMES["snare"], { interrupt: true });
-  // const [beat, setBeat] = useState(1)
+
   const playSounds = (inst) => {
     if (inst === "kick") playKick();
     if (inst === "snare") playSnare();
   };
 
   useEffect(() => {
-    let beatIndex = 1;
     if (!isLooping) return;
     let bpmTick = setInterval(() => {
       INSTRUMENT_NAMES.forEach((inst) => {
         if (instrumentPatterns[inst][beat - 1] === 1) {
           playSounds(inst);
-          console.log(`${beat}: play`);
-        } else {
-          console.log(`${beat}: -`);
         }
       });
 
@@ -69,6 +67,7 @@ const MainBoard = () => {
 
   const togglePlay = () => {
     setIsLooping(!isLooping);
+    dispatch({ type: "reset" })
   };
 
   const clearPatterns = () => {
@@ -77,10 +76,9 @@ const MainBoard = () => {
 
   return (
     <div>
-      <Button onClick={togglePlay}>Play!</Button>
+      <Button onClick={togglePlay}>{isLooping ? 'Stop' : 'Play'}</Button>
       <Button onClick={clearPatterns}>Clear</Button>
       <TextField
-        id="standard-basic"
         label="Standard"
         value={bpm}
         onChange={(e) => setBpm(e.target.value)}

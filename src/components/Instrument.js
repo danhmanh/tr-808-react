@@ -16,16 +16,19 @@ const useStyles = makeStyles({
     marginLeft: 6,
     width: 50,
     height: 50,
-    '&:hover': {
+    "&:hover": {
       backgroundColor: "#34b1eb",
-   },
+    },
   },
   btnActive: {
     backgroundColor: "#eb346e",
-    '&:hover': {
+    "&:hover": {
       backgroundColor: "#eb346e",
-   },
+    },
   },
+  btnName: {
+    width: '100%'
+  }
 });
 
 const Instrument = (props) => {
@@ -35,15 +38,17 @@ const Instrument = (props) => {
   const [playOn] = useSound(SOUND_NAMES[name], { interrupt: true });
 
   const toggleActive = (index) => {
-    instrumentPatterns[name][index] === 0 && playOn()
-    updatePattern(name, index)
+    instrumentPatterns[name][index] === 0 && playOn();
+    updatePattern(name, index);
   };
 
   return (
     <>
       <Grid container spacing={3}>
         <Grid item md={2}>
-          <Paper>{name}</Paper>
+          <Button color="secondary" variant="outlined" className={classes.btnName}>
+            {name}
+          </Button>
         </Grid>
         <Grid item md={10}>
           {instrumentPatterns[name].map((beat, index) => (
@@ -54,6 +59,8 @@ const Instrument = (props) => {
               }`}
               onClick={() => toggleActive(index)}
               disableRipple={true}
+              variant="contained"
+              color="primary"
             >
               {index + 1}
             </Button>

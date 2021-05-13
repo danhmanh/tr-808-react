@@ -35,8 +35,8 @@ const Instrument = (props) => {
   const [playOn] = useSound(SOUND_NAMES[name], { interrupt: true });
 
   const toggleActive = (index) => {
+    instrumentPatterns[name][index] === 0 && playOn()
     updatePattern(name, index)
-    instrumentPatterns[name][index] === 1 && playOn()
   };
 
   return (

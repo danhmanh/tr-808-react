@@ -1,61 +1,70 @@
-import React, { useState, useEffect } from "react";
-import { Button } from "@material-ui/core";
+import React, { useState, useEffect, useReducer } from "react";
+import { Button, TextField } from "@material-ui/core";
 import Instrument from "./Instrument";
 import { BLANK_PATTERN } from "../config";
 import kick808 from "../sounds/kick.wav";
 import snare808 from "../sounds/snare.wav";
 import useSound from "use-sound";
+import BeatBar from "./BeatBar";
 
 const SOUND_NAMES = {
   kick: kick808,
   snare: snare808,
 };
 
+const reducer = (beat, action) => {
+  switch (action.type) {
+    case "tick":
+      return beat < 16 ? beat + 1 : 1;
+    default:
+      return beat;
+  }
+};
+
 const INSTRUMENT_NAMES = ["kick", "snare"];
 
 const MainBoard = () => {
-  const [isLooping, setIsLooping] = useState(true);
-  const [bpm, setBpm] = useState(120);
+  const [beat, dispatch] = useReducer(reducer, 1);
+  const [isLooping, setIsLooping] = useState(false);
+  const [bpm, setBpm] = useState(60);
 
   const [instrumentPatterns, setInstrumentPatterns] = useState(BLANK_PATTERN);
-  const [playKick] = useSound(SOUND_NAMES['kick'], { interrupt: true });
-  const [playSnare] = useSound(SOUND_NAMES['snare'], { interrupt: true });
-
+  const [playKick] = useSound(SOUND_NAMES["kick"], { interrupt: true });
+  const [playSnare] = useSound(SOUND_NAMES["snare"], { interrupt: true });
+  // const [beat, setBeat] = useState(1)
   const playSounds = (inst) => {
-    if(inst === 'kick') playKick()
-    if(inst === 'snare') playSnare()
-  }
+    if (inst === "kick") playKick();
+    if (inst === "snare") playSnare();
+  };
 
-    useEffect(() => {
+  useEffect(() => {
     let beatIndex = 1;
+    if (!isLooping) return;
     let bpmTick = setInterval(() => {
-      if (!isLooping) return;
-
-      INSTRUMENT_NAMES.forEach(inst => {
-        if (instrumentPatterns[inst][beatIndex - 1] === 1) {
-          playSounds(inst)
-          console.log(`${beatIndex}: play`);
+      INSTRUMENT_NAMES.forEach((inst) => {
+        if (instrumentPatterns[inst][beat - 1] === 1) {
+          playSounds(inst);
+          console.log(`${beat}: play`);
         } else {
-          console.log(`${beatIndex}: -`);
+          console.log(`${beat}: -`);
         }
-      })
+      });
 
-      if (beatIndex < 16) {
-        beatIndex += 1;
-      } else {
-        beatIndex = 1;
-      }
+      dispatch({ type: "tick" });
     }, (60 * 1000) / bpm / 4);
 
     return () => {
       clearInterval(bpmTick);
     };
-  }, [isLooping, instrumentPatterns]);
+  }, [isLooping, instrumentPatterns, bpm, beat]);
 
   const updatePattern = (name, index) => {
     let newPatterns = { ...instrumentPatterns };
-    newPatterns[name][index] = newPatterns[name][index] === 0 ? 1 : 0;
-    setInstrumentPatterns(newPatterns);
+    const properObject = [...newPatterns[name]];
+    properObject[index] = newPatterns[name][index] === 0 ? 1 : 0;
+    const currentPattern = { ...newPatterns, [name]: properObject };
+
+    setInstrumentPatterns(currentPattern);
   };
 
   const togglePlay = () => {
@@ -63,24 +72,25 @@ const MainBoard = () => {
   };
 
   const clearPatterns = () => {
-
-    //? Why can not use BLANK_PATTERN?
-    setInstrumentPatterns({
-      kick: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      snare: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    });
+    setInstrumentPatterns(BLANK_PATTERN);
   };
 
   return (
     <div>
       <Button onClick={togglePlay}>Play!</Button>
       <Button onClick={clearPatterns}>Clear</Button>
+      <TextField
+        id="standard-basic"
+        label="Standard"
+        value={bpm}
+        onChange={(e) => setBpm(e.target.value)}
+        variant="outlined"
+      />
+      <BeatBar currentBeat={beat} />
       {INSTRUMENT_NAMES.map((name, index) => (
         <Instrument
           key={index}
           name={name}
-          isLooping={isLooping}
-          bpm={bpm}
           instrumentPatterns={instrumentPatterns}
           updatePattern={updatePattern}
         />

@@ -30,32 +30,9 @@ const useStyles = makeStyles({
 
 const Instrument = (props) => {
   const classes = useStyles(props);
-  const { name, isLooping, bpm, instrumentPatterns, updatePattern } = props;
+  const { name, instrumentPatterns, updatePattern } = props;
 
   const [playOn] = useSound(SOUND_NAMES[name], { interrupt: true });
-
-  // useEffect(() => {
-  //   let beatIndex = 1;
-  //   let bpmTick = setInterval(() => {
-  //     if (!isLooping) return;
-  //     if (pattern[beatIndex - 1] === 1) {
-  //       playOn();
-  //       console.log(`${beatIndex}: play`);
-  //     } else {
-  //       console.log(`${beatIndex}: -`);
-  //     }
-
-  //     if (beatIndex < 16) {
-  //       beatIndex += 1;
-  //     } else {
-  //       beatIndex = 1;
-  //     }
-  //   }, (60 * 1000) / bpm);
-
-  //   return () => {
-  //     clearInterval(bpmTick);
-  //   };
-  // }, [isLooping, pattern]);
 
   const toggleActive = (index) => {
     updatePattern(name, index)

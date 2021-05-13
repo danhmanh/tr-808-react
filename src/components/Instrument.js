@@ -2,13 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Grid, Paper, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import useSound from "use-sound";
-import kick808 from "../sounds/kick.wav";
-import snare808 from "../sounds/snare.wav";
-
-const SOUND_NAMES = {
-  kick: kick808,
-  snare: snare808,
-};
+import { SOUNDS } from "../config";
 
 const useStyles = makeStyles({
   btnPattern: {
@@ -27,15 +21,15 @@ const useStyles = makeStyles({
     },
   },
   btnName: {
-    width: '100%'
-  }
+    width: "100%",
+  },
 });
 
 const Instrument = (props) => {
   const classes = useStyles(props);
   const { name, instrumentPatterns, updatePattern } = props;
 
-  const [playOn] = useSound(SOUND_NAMES[name], { interrupt: true });
+  const [playOn] = useSound(SOUNDS[name], { interrupt: true });
 
   const toggleActive = (index) => {
     instrumentPatterns[name][index] === 0 && playOn();
@@ -46,7 +40,11 @@ const Instrument = (props) => {
     <>
       <Grid container spacing={3}>
         <Grid item md={2}>
-          <Button color="secondary" variant="outlined" className={classes.btnName}>
+          <Button
+            color="secondary"
+            variant="outlined"
+            className={classes.btnName}
+          >
             {name}
           </Button>
         </Grid>

@@ -1,16 +1,11 @@
 import React, { useState, useEffect, useReducer } from "react";
 import { Button, TextField } from "@material-ui/core";
 import Instrument from "./Instrument";
-import { BLANK_PATTERN } from "../config";
-import kick808 from "../sounds/kick.wav";
-import snare808 from "../sounds/snare.wav";
+import { BLANK_PATTERN, SOUNDS } from "../config";
 import useSound from "use-sound";
 import BeatBar from "./BeatBar";
 
-const SOUND_NAMES = {
-  kick: kick808,
-  snare: snare808,
-};
+
 
 const reducer = (beat, action) => {
   switch (action.type) {
@@ -23,7 +18,7 @@ const reducer = (beat, action) => {
   }
 };
 
-const INSTRUMENT_NAMES = ["kick", "snare"];
+const INSTRUMENT_NAMES = ["kick", "snare", "closedHihat"];
 
 const MainBoard = () => {
   const [beat, dispatch] = useReducer(reducer, 1);
@@ -31,12 +26,15 @@ const MainBoard = () => {
   const [bpm, setBpm] = useState(60);
 
   const [instrumentPatterns, setInstrumentPatterns] = useState(BLANK_PATTERN);
-  const [playKick] = useSound(SOUND_NAMES["kick"], { interrupt: true });
-  const [playSnare] = useSound(SOUND_NAMES["snare"], { interrupt: true });
+  const [playKick] = useSound(SOUNDS["kick"], { interrupt: true });
+  const [playSnare] = useSound(SOUNDS["snare"], { interrupt: true });
+  const [playClosedHihat] = useSound(SOUNDS["closedHihat"], { interrupt: true });
 
   const playSounds = (inst) => {
     if (inst === "kick") playKick();
     if (inst === "snare") playSnare();
+    if (inst === "closedHihat") playClosedHihat();
+
   };
 
   useEffect(() => {

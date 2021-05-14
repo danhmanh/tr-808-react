@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Grid, Paper, Button } from "@material-ui/core";
+import { Grid, Paper, Button, Slider } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import useSound from "use-sound";
 import { SOUNDS } from "../config";
-import CustomKnob from "./CustomKnob"
+import CustomKnob from "./CustomKnob";
 
 const useStyles = makeStyles({
   btnPattern: {
@@ -28,7 +28,8 @@ const useStyles = makeStyles({
 
 const Instrument = (props) => {
   const classes = useStyles(props);
-  const { name, instrumentPatterns, updatePattern } = props;
+  const { name, instrumentPatterns, updatePattern, volume, updateVolume } =
+    props;
 
   const [playOn] = useSound(SOUNDS[name], { interrupt: true });
 
@@ -36,6 +37,10 @@ const Instrument = (props) => {
     instrumentPatterns[name][index] === 0 && playOn();
     updatePattern(name, index);
   };
+
+  const onChangeVolume = (event, value) => {
+    updateVolume(name, value)
+  }
 
   return (
     <>
@@ -49,9 +54,16 @@ const Instrument = (props) => {
           >
             {name}
           </Button>
+
+          <Slider
+            value={volume}
+            aria-labelledby="continuous-slider"
+            name={name}
+            onChange={onChangeVolume}
+          />
         </Grid>
         <Grid item md={1}>
-          <CustomKnob />
+          {/* <CustomKnob /> */}
         </Grid>
         <Grid item md={9}>
           {instrumentPatterns[name].map((beat, index) => (

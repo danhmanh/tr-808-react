@@ -1,7 +1,7 @@
 import React from "react";
 import { Knob, Pointer, Arc, Value } from "rc-knob";
 
-function CustomKnob(props) {
+function CustomKnob() {
   return (
     <Knob
       size={80}
